@@ -4,12 +4,21 @@ import fetch from 'node-fetch';
 
 const app = express();
 
+// Define the base URL for the external API
+const API_BASE_URL = 'https://8a3a-182-253-50-137.ngrok-free.app/api';
+
 app.use(cors({
     origin: 'http://127.0.0.1:5500' // Allow requests from this origin
 }));
 
-app.get('/api/kontrol-kelas/:id', (req, res) => {
-    const apiUrl = `https://8a3a-182-253-50-137.ngrok-free.app/api/kontrol-kelas/${req.params.id}`;
+// Generic route to handle all API calls to the external service
+app.get('/api/:endpoint/:id?', (req, res) => {
+    const { endpoint, id } = req.params;
+    let apiUrl = `${API_BASE_URL}/${endpoint}`;
+
+    if (id) {
+        apiUrl += `/${id}`;
+    }
 
     fetch(apiUrl, {
         method: 'GET',
