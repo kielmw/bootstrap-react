@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kelas</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+    <div class="container-md border mt-3">
+        <h1>Edit Kelas</h1>
+        <form id="editForm">
+            <div class="mb-3">
+                <label for="idInput" class="form-label">ID Kelas:</label>
+                <input type="text" id="idInput" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="namaInput" class="form-label">Nama Kelas:</label>
+                <input type="text" id="namaInput" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="guruInput" class="form-label">Nama Guru:</label>
+                <input type="text" id="guruInput" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="deskripsiInput" class="form-label">Deskripsi Kelas:</label>
+                <textarea id="deskripsiInput" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const id = getUrlParameter('id'); // Get the ID from URL parameter
+
+            // Fetch data for the specified ID
+            const apiUrl = `http://localhost:3000/api/kontrol-kelas/${id}`;
+            fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new TypeError('Received non-JSON response');
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                // Populate the form with fetched data
+                document.getElementById('idInput').value = data.idKelas;
+                document.getElementById('namaInput').value = data.namaKelas;
+                document.getElementById('guruInput').value = data.namaGuru;
+                document.getElementById('deskripsiInput').value = data.deskripsiKelas;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+            // Submit form event listener
+            document.getElementById('editForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Gather form data
+                const formData = {
+                    namaKelas: document.getElementById('namaInput').value,
+                    namaGuru: document.getElementById('guruInput').value,
+                    deskripsiKelas: document.getElementById('deskripsiInput').value
+                };
+
+                // Send PUT request to update data
+                fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update data');
+                    }
+                    alert('Data updated successfully!');
+                    // Redirect to the previous page after successful update
+                    window.location.href = 'getKelas.html';
+                })
+                .catch(error => {
+                    console.error('Error updating data:', error);
+                    alert('Failed to update data');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

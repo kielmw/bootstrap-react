@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>getStudentKelas</title>
+    <title>getStudent</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
     <div class="container-md border mt-3">
-        <h1>Data from API kontrol-kelas-student</h1>
+        <h1>Data from API</h1>
         <div class="mb-3">
             <label for="idInput" class="form-label">Enter ID Kelas:</label>
             <input type="number" id="idInput" class="form-control" placeholder="Enter ID">
@@ -26,7 +26,7 @@
             document.getElementById('fetchButton').addEventListener('click', () => {
                 const id = document.getElementById('idInput').value;
                 if (id) {
-                    const apiUrl = `http://localhost:3000/api/kontrol-kelas-student/${id}`;
+                    const apiUrl = `http://localhost:3000/api/kontrol-kelas/${id}`;
 
                     fetch(apiUrl, {
                         method: 'GET'
@@ -59,31 +59,44 @@
                         idKelasHeader.textContent = 'ID Kelas';
                         headerRow.appendChild(idKelasHeader);
                         
-                        const nimHeader = document.createElement('th');
-                        nimHeader.textContent = 'NIM';
-                        headerRow.appendChild(nimHeader);
+                        const namaKelasHeader = document.createElement('th');
+                        namaKelasHeader.textContent = 'Nama Kelas';
+                        headerRow.appendChild(namaKelasHeader);
+
+                        const namaGuruHeader = document.createElement('th');
+                        namaGuruHeader.textContent = 'Nama Guru';
+                        headerRow.appendChild(namaGuruHeader);
+                        
+                        const deskripsiKelasHeader = document.createElement('th');
+                        deskripsiKelasHeader.textContent = 'Deskripsi Kelas';
+                        headerRow.appendChild(deskripsiKelasHeader);
                         
                         thead.appendChild(headerRow);
                         table.appendChild(thead);
 
                         // Create the table body
                         const tbody = document.createElement('tbody');
+                        const dataRow = document.createElement('tr');
+                        
+                        const idKelasCell = document.createElement('td');
+                        idKelasCell.textContent = data.idKelas;
+                        dataRow.appendChild(idKelasCell);
+                        
+                        const namaKelasCell = document.createElement('td');
+                        namaKelasCell.textContent = data.namaKelas;
+                        dataRow.appendChild(namaKelasCell);
 
-                        data.forEach(item => {
-                            const dataRow = document.createElement('tr');
-                            
-                            const idKelasCell = document.createElement('td');
-                            idKelasCell.textContent = item.id.kontrolKelas;
-                            dataRow.appendChild(idKelasCell);
-                            
-                            const nimCell = document.createElement('td');
-                            nimCell.textContent = item.id.student;
-                            dataRow.appendChild(nimCell);
-                            
-                            tbody.appendChild(dataRow);
-                        });
-
+                        const namaGuruCell = document.createElement('td');
+                        namaGuruCell.textContent = data.namaGuru;
+                        dataRow.appendChild(namaGuruCell);
+                        
+                        const deskripsiKelasCell = document.createElement('td');
+                        deskripsiKelasCell.textContent = data.deskripsiKelas;
+                        dataRow.appendChild(deskripsiKelasCell);
+                        
+                        tbody.appendChild(dataRow);
                         table.appendChild(tbody);
+
                         dataContainer.appendChild(table);
                     })
                     .catch(error => {

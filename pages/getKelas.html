@@ -9,10 +9,6 @@
 <body>
     <div class="container-md border mt-3">
         <h1>Data from API</h1>
-        <div class="mb-3">
-            <label for="idInput" class="form-label">Enter ID Kelas:</label>
-            <input type="number" id="idInput" class="form-control" placeholder="Enter ID">
-        </div>
         <button id="fetchButton" class="btn btn-primary">Fetch Data</button>
 
         <div id="data-container" class="mt-3">
@@ -24,55 +20,106 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('fetchButton').addEventListener('click', () => {
-                const id = document.getElementById('idInput').value;
-                if (id) {
-                    const apiUrl = `http://localhost:3000/api/kontrol-kelas/${id}`;
+                const apiUrl = `http://localhost:3000/api/kontrol-kelas`;
 
-                    fetch(apiUrl, {
-                        method: 'GET'
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok: ' + response.statusText);
-                        }
-                        
-                        const contentType = response.headers.get('content-type');
-                        if (!contentType || !contentType.includes('application/json')) {
-                            throw new TypeError('Received non-JSON response');
-                        }
-                        
-                        return response.json();
-                    })
-                    .then(data => {
-                        const dataContainer = document.getElementById('data-container');
-                        dataContainer.innerHTML = ''; // Clear previous data
+                fetch(apiUrl, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
 
-                        const idKelas = data.idKelas;
-                        const namaKelas = data.namaKelas;
-                        const deskripsiKelas = data.deskripsiKelas;
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new TypeError('Received non-JSON response');
+                    }
 
-                        const idKelasElement = document.createElement('div');
-                        idKelasElement.textContent = `ID Kelas: ${idKelas}`;
-                        dataContainer.appendChild(idKelasElement);
+                    return response.json();
+                })
+                .then(data => {
+                    const dataContainer = document.getElementById('data-container');
+                    dataContainer.innerHTML = ''; // Clear previous data
 
-                        const namaKelasElement = document.createElement('div');
-                        namaKelasElement.textContent = `Nama Kelas: ${namaKelas}`;
-                        dataContainer.appendChild(namaKelasElement);
+                    // Create the table
+                    const table = document.createElement('table');
+                    table.className = 'table table-striped';
 
-                        const deskripsiKelasElement = document.createElement('div');
-                        deskripsiKelasElement.textContent = `Deskripsi Kelas: ${deskripsiKelas}`;
-                        dataContainer.appendChild(deskripsiKelasElement);
-                    })
-                    .catch(error => {
-                        const dataContainer = document.getElementById('data-container');
-                        dataContainer.innerHTML = ''; // Clear previous data
-                        const errorElement = document.createElement('div');
-                        errorElement.textContent = `Error fetching data: ${error.message}`;
-                        dataContainer.appendChild(errorElement);
+                    // Create the table header
+                    const thead = document.createElement('thead');
+                    const headerRow = document.createElement('tr');
+
+                    const idKelasHeader = document.createElement('th');
+                    idKelasHeader.textContent = 'ID Kelas';
+                    headerRow.appendChild(idKelasHeader);
+
+                    const namaKelasHeader = document.createElement('th');
+                    namaKelasHeader.textContent = 'Nama Kelas';
+                    headerRow.appendChild(namaKelasHeader);
+
+                    const namaGuruHeader = document.createElement('th');
+                    namaGuruHeader.textContent = 'Nama Guru';
+                    headerRow.appendChild(namaGuruHeader);
+
+                    const deskripsiKelasHeader = document.createElement('th');
+                    deskripsiKelasHeader.textContent = 'Deskripsi Kelas';
+                    headerRow.appendChild(deskripsiKelasHeader);
+
+                    const editHeader = document.createElement('th');
+                    editHeader.textContent = 'Edit';
+                    headerRow.appendChild(editHeader);
+
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    // Create the table body
+                    const tbody = document.createElement('tbody');
+                    
+                    data.forEach(item => {
+                        const dataRow = document.createElement('tr');
+
+                        const idKelasCell = document.createElement('td');
+                        idKelasCell.textContent = item.idKelas;
+                        dataRow.appendChild(idKelasCell);
+
+                        const namaKelasCell = document.createElement('td');
+                        namaKelasCell.textContent = item.namaKelas;
+                        dataRow.appendChild(namaKelasCell);
+
+                        const namaGuruCell = document.createElement('td');
+                        namaGuruCell.textContent = item.namaGuru;
+                        dataRow.appendChild(namaGuruCell);
+
+                        const deskripsiKelasCell = document.createElement('td');
+                        deskripsiKelasCell.textContent = item.deskripsiKelas;
+                        dataRow.appendChild(deskripsiKelasCell);
+
+                        const editButtonCell = document.createElement('td');
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.className = 'btn btn-primary';
+                        // Add click event listener for edit button
+                        editButton.addEventListener('click', () => {
+                            // Navigate to editKelas.html page with ID as parameter
+                            window.location.href = `editKelas.html?id=${item.idKelas}`;
+                        });
+                        editButtonCell.appendChild(editButton);
+                        dataRow.appendChild(editButtonCell);
+
+                        tbody.appendChild(dataRow);
                     });
-                } else {
-                    alert('Please enter a valid ID');
-                }
+
+                    table.appendChild(tbody);
+                    dataContainer.appendChild(table);
+                })
+                .catch(error => {
+                    const dataContainer = document.getElementById('data-container');
+                    dataContainer.innerHTML = ''; // Clear previous data
+                    const errorElement = document.createElement('div');
+                    errorElement.className = 'alert alert-danger';
+                    errorElement.textContent = `Error fetching data: ${error.message}`;
+                    dataContainer.appendChild(errorElement);
+                });
             });
         });
     </script>
