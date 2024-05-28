@@ -50,12 +50,6 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok: ' + response.statusText);
                 }
-                
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new TypeError('Received non-JSON response');
-                }
-                
                 return response.json();
             })
             .then(data => {
@@ -92,6 +86,9 @@
                     if (!response.ok) {
                         throw new Error('Failed to update data');
                     }
+                    return response.json();
+                })
+                .then(() => {
                     alert('Data updated successfully!');
                     // Redirect to the previous page after successful update
                     window.location.href = 'getKelas.html';

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Kelas</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+    <div class="container-md border mt-3">
+        <h1>Add Kelas</h1>
+        <form id="addForm">
+            <div class="mb-3">
+                <label for="namaInput" class="form-label">Nama Kelas:</label>
+                <input type="text" id="namaInput" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="guruInput" class="form-label">Nama Guru:</label>
+                <input type="text" id="guruInput" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="deskripsiInput" class="form-label">Deskripsi Kelas:</label>
+                <textarea id="deskripsiInput" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Kelas</button>
+        </form>
+    </div>
+
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiUrl = 'http://localhost:3000/api/kontrol-kelas';
+
+            // Submit form event listener
+            document.getElementById('addForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Gather form data
+                const formData = {
+                    namaKelas: document.getElementById('namaInput').value,
+                    namaGuru: document.getElementById('guruInput').value,
+                    deskripsiKelas: document.getElementById('deskripsiInput').value
+                };
+
+                // Send POST request to add new data
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add data');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    alert('Data added successfully!');
+                    // Redirect to the previous page or another relevant page
+                    window.location.href = '/index.html';
+                })
+                .catch(error => {
+                    console.error('Error adding data:', error);
+                    alert('Failed to add data');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -9,7 +9,10 @@
 <body>
     <div class="container-md border mt-3">
         <h1>Data from API</h1>
-        <button id="fetchButton" class="btn btn-primary">Fetch Data</button>
+        <div class="mb-3">
+            <button id="fetchButton" class="btn btn-primary">Fetch Data</button>
+            <button id="newKelasButton" class="btn btn-success"> + Kelas</button>
+        </div>
 
         <div id="data-container" class="mt-3">
             <!-- Data will be injected here -->
@@ -19,6 +22,7 @@
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Event listener for the "Fetch Data" button
             document.getElementById('fetchButton').addEventListener('click', () => {
                 const apiUrl = `http://localhost:3000/api/kontrol-kelas`;
 
@@ -120,6 +124,12 @@
                     errorElement.textContent = `Error fetching data: ${error.message}`;
                     dataContainer.appendChild(errorElement);
                 });
+            });
+
+            // Event listener for the "New Kelas" button
+            document.getElementById('newKelasButton').addEventListener('click', () => {
+                // Navigate to newKelas.html page
+                window.location.href = 'newKelas.html';
             });
         });
     </script>

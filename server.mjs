@@ -5,11 +5,14 @@ import fetch from 'node-fetch';
 const app = express();
 
 // Define the base URL for the external API
-const API_BASE_URL = 'https://7abc-114-5-105-253.ngrok-free.app/api';
+const API_BASE_URL = 'http://localhost:9090/api';
 
 app.use(cors({
     origin: 'http://127.0.0.1:5500' // Allow requests from this origin
 }));
+
+// Middleware to parse JSON bodies
+app.use(express.json());
 
 // Route to handle GET requests
 app.get('/api/:endpoint/:id?', (req, res) => {
@@ -66,6 +69,34 @@ app.put('/api/:endpoint/:id', (req, res) => {
     .catch(error => {
         console.error('Error updating data:', error);
         res.status(500).json({ error: 'An error occurred while updating data' });
+    });
+});
+
+// Route to handle POST requests
+app.post('/api/:endpoint', (req, res) => {
+    const { endpoint } = req.params;
+    const apiUrl = `${API_BASE_URL}/${endpoint}`;
+
+    // Assuming req.body contains the new data
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req.body)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add data');
+        }
+        return response.json();
+    })
+    .then(data => {
+        res.status(201).json(data); // Respond with the created data
+    })
+    .catch(error => {
+        console.error('Error adding data:', error);
+        res.status(500).json({ error: 'An error occurred while adding data' });
     });
 });
 
