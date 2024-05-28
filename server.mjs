@@ -100,6 +100,29 @@ app.post('/api/:endpoint', (req, res) => {
     });
 });
 
+// Route to handle DELETE requests
+app.delete('/api/:endpoint/:id', (req, res) => {
+    const { endpoint, id } = req.params;
+    const apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
+
+    fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete data');
+        }
+        res.status(204).send(); // No content to send back
+    })
+    .catch(error => {
+        console.error('Error deleting data:', error);
+        res.status(500).json({ error: 'An error occurred while deleting data' });
+    });
+});
+
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
