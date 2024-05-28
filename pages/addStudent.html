@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+    <div class="container-md border mt-3">
+        <h1>Add Student</h1>
+        <form id="addStudentForm" action="http://localhost:3000/api/kontrol-kelas-student" method="POST">
+            <div class="mb-3">
+                <label for="idKelas" class="form-label">Class ID:</label>
+                <input type="text" id="idKelas" name="idKelas" class="form-control" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="nim" class="form-label">NIM:</label>
+                <input type="text" id="nim" name="nim" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Student</button>
+        </form>
+    </div>
+
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idKelas = urlParams.get('id');
+
+            if (idKelas) {
+                document.getElementById('idKelas').value = idKelas;
+            } else {
+                alert('Class ID (idKelas) is missing!');
+                // Optionally, you can redirect to a relevant page
+                window.location.href = '/getKelas.html';
+            }
+
+            document.getElementById('addStudentForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = {
+                    idKelas: document.getElementById('idKelas').value,
+                    nim: document.getElementById('nim').value
+                };
+
+                fetch('http://localhost:3000/api/kontrol-kelas-student', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add student');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    alert('Student added successfully!');
+                    window.location.href = 'getKelas.html';
+                })
+                .catch(error => {
+                    console.error('Error adding student:', error);
+                    alert('Failed to add student');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
