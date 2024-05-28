@@ -199,8 +199,34 @@
                                 noStudentsMessage.classList.add('d-none');
                                 students.forEach(student => {
                                     const listItem = document.createElement('li');
-                                    listItem.className = 'list-group-item';
+                                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
                                     listItem.textContent = student.id.student;
+
+                                    // Remove button
+                                    const removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Remove';
+                                    removeButton.className = 'btn btn-danger btn-sm';
+                                    removeButton.addEventListener('click', () => {
+                                        if (confirm(`Are you sure you want to remove student ${student.id.student}?`)) {
+                                            fetch(`http://localhost:3000/api/kontrol-kelas-student/${item.idKelas}/${student.id.student}`, {
+                                                method: 'DELETE'
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`Failed to remove student: ${response.statusText} (${response.status})`);
+                                                }
+                                                alert('Student removed successfully!');
+                                                // Refresh the student list
+                                                studentsButton.click();
+                                            })
+                                            .catch(error => {
+                                                console.error('Error removing student:', error);
+                                                alert('Failed to remove student: ' + error.message);
+                                            });
+                                        }
+                                    })
+                                    listItem.appendChild(removeButton);
+
                                     studentList.appendChild(listItem);
                                 });
                             }
