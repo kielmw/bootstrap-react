@@ -49,7 +49,6 @@ app.put('/api/:endpoint/:id', (req, res) => {
     const { endpoint, id } = req.params;
     const apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
 
-    // Assuming req.body contains the updated data
     fetch(apiUrl, {
         method: 'PUT',
         headers: {
@@ -64,7 +63,7 @@ app.put('/api/:endpoint/:id', (req, res) => {
         return response.json();
     })
     .then(data => {
-        res.json(data); // Respond with the updated data if needed
+        res.json(data);
     })
     .catch(error => {
         console.error('Error updating data:', error);
@@ -77,7 +76,6 @@ app.post('/api/:endpoint', (req, res) => {
     const { endpoint } = req.params;
     const apiUrl = `${API_BASE_URL}/${endpoint}`;
 
-    // Assuming req.body contains the new data
     fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -92,7 +90,7 @@ app.post('/api/:endpoint', (req, res) => {
         return response.json();
     })
     .then(data => {
-        res.status(201).json(data); // Respond with the created data
+        res.status(201).json(data);
     })
     .catch(error => {
         console.error('Error adding data:', error);
@@ -101,9 +99,13 @@ app.post('/api/:endpoint', (req, res) => {
 });
 
 // Route to handle DELETE requests
-app.delete('/api/:endpoint/:id', (req, res) => {
-    const { endpoint, id } = req.params;
-    const apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
+app.delete('/api/:endpoint/:id/:subid?', (req, res) => {
+    const { endpoint, id, subid } = req.params;
+    let apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
+
+    if (subid) {
+        apiUrl += `/${subid}`;
+    }
 
     fetch(apiUrl, {
         method: 'DELETE',
@@ -115,7 +117,7 @@ app.delete('/api/:endpoint/:id', (req, res) => {
         if (!response.ok) {
             throw new Error('Failed to delete data');
         }
-        res.status(204).send(); // No content to send back
+        res.status(204).send();
     })
     .catch(error => {
         console.error('Error deleting data:', error);
