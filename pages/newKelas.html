@@ -19,6 +19,10 @@
                 <select id="guruInput" class="form-control" required></select>
             </div>
             <div class="mb-3">
+                <label for="nipInput" class="form-label">NIP:</label>
+                <input type="text" id="nipInput" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
                 <label for="deskripsiInput" class="form-label">Deskripsi Kelas:</label>
                 <textarea id="deskripsiInput" class="form-control" required></textarea>
             </div>
@@ -39,10 +43,21 @@
                 const guruInput = document.getElementById('guruInput');
                 teachers.forEach(teacher => {
                     const option = document.createElement('option');
-                    option.value = `${teacher.nama} (${teacher.nip})`;
-                    option.text = `${teacher.nama} (${teacher.nip})`;
+                    option.value = teacher.nama;
+                    option.text = teacher.nama;
+                    option.dataset.nip = teacher.nip;
                     guruInput.add(option);
                 });
+
+                // Update NIP field when a teacher is selected
+                guruInput.addEventListener('change', () => {
+                    const selectedOption = guruInput.options[guruInput.selectedIndex];
+                    const nipInput = document.getElementById('nipInput');
+                    nipInput.value = selectedOption.dataset.nip;
+                });
+
+                // Trigger change event to populate NIP field for the initial selection
+                guruInput.dispatchEvent(new Event('change'));
             })
             .catch(error => {
                 console.error('Error fetching teachers:', error);
@@ -56,6 +71,7 @@
                 const formData = {
                     namaKelas: document.getElementById('namaInput').value,
                     namaGuru: document.getElementById('guruInput').value,
+                    nip: document.getElementById('nipInput').value,
                     deskripsiKelas: document.getElementById('deskripsiInput').value
                 };
 
