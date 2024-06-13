@@ -16,7 +16,7 @@
             </div>
             <div class="mb-3">
                 <label for="nim" class="form-label">NIM:</label>
-                <div id="nimContainer"></div>
+                <select id="nim" name="nim" class="form-control" required></select>
             </div>
             <button type="submit" class="btn btn-primary">Add Student</button>
         </form>
@@ -36,8 +36,8 @@
                 window.location.href = '/getKelas.html';
             }
 
-            // Fetch students and populate radio buttons
-            fetch('http://localhost:3000/api/student')
+            // Fetch students and populate the dropdown list
+            fetch('http://localhost:3000/api/students')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch students');
@@ -45,27 +45,12 @@
                     return response.json();
                 })
                 .then(students => {
-                    const nimContainer = document.getElementById('nimContainer');
+                    const nimSelect = document.getElementById('nim');
                     students.forEach(student => {
-                        const radioOption = document.createElement('div');
-                        radioOption.classList.add('form-check');
-
-                        const radioInput = document.createElement('input');
-                        radioInput.classList.add('form-check-input');
-                        radioInput.type = 'radio';
-                        radioInput.name = 'nim';
-                        radioInput.id = `nim_${student.nim}`;
-                        radioInput.value = student.nim;
-                        radioInput.required = true;
-
-                        const radioLabel = document.createElement('label');
-                        radioLabel.classList.add('form-check-label');
-                        radioLabel.htmlFor = `nim_${student.nim}`;
-                        radioLabel.textContent = `${student.nama} (${student.nim})`;
-
-                        radioOption.appendChild(radioInput);
-                        radioOption.appendChild(radioLabel);
-                        nimContainer.appendChild(radioOption);
+                        const option = document.createElement('option');
+                        option.value = student.nim;
+                        option.textContent = `${student.nama} (${student.nim})`;
+                        nimSelect.appendChild(option);
                     });
                 })
                 .catch(error => {
@@ -78,7 +63,7 @@
 
                 const formData = {
                     idKelas: document.getElementById('idKelas').value,
-                    nim: document.querySelector('input[name="nim"]:checked').value
+                    nim: document.getElementById('nim').value
                 };
 
                 fetch('http://localhost:3000/api/kontrol-kelas-student', {

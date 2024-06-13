@@ -20,7 +20,7 @@
             </div>
             <div class="mb-3">
                 <label for="guruInput" class="form-label">Nama Guru:</label>
-                <input type="text" id="guruInput" class="form-control">
+                <select id="guruInput" class="form-control"></select>
             </div>
             <div class="mb-3">
                 <label for="deskripsiInput" class="form-label">Deskripsi Kelas:</label>
@@ -61,6 +61,23 @@
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
+            });
+
+            // Fetch teachers and populate the dropdown list
+            const teacherApiUrl = 'http://localhost:3000/api/teachers';
+            fetch(teacherApiUrl)
+            .then(response => response.json())
+            .then(teachers => {
+                const guruInput = document.getElementById('guruInput');
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = `${teacher.nama} (${teacher.nip})`;
+                    option.text = `${teacher.nama} (${teacher.nip})`;
+                    guruInput.add(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching teachers:', error);
             });
 
             // Submit form event listener

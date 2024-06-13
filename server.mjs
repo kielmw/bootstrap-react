@@ -14,14 +14,22 @@ app.use(cors({
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Route to handle GET requests
-app.get('/api/:endpoint/:id?', (req, res) => {
-    const { endpoint, id } = req.params;
+// Function to construct the API URL
+const constructApiUrl = (endpoint, id, subid) => {
     let apiUrl = `${API_BASE_URL}/${endpoint}`;
-
     if (id) {
         apiUrl += `/${id}`;
     }
+    if (subid) {
+        apiUrl += `/${subid}`;
+    }
+    return apiUrl;
+};
+
+// Route to handle GET requests
+app.get('/api/:endpoint/:id?', (req, res) => {
+    const { endpoint, id } = req.params;
+    const apiUrl = constructApiUrl(endpoint, id);
 
     fetch(apiUrl, {
         method: 'GET',
@@ -47,7 +55,7 @@ app.get('/api/:endpoint/:id?', (req, res) => {
 // Route to handle PUT requests
 app.put('/api/:endpoint/:id', (req, res) => {
     const { endpoint, id } = req.params;
-    const apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
+    const apiUrl = constructApiUrl(endpoint, id);
 
     fetch(apiUrl, {
         method: 'PUT',
@@ -74,7 +82,7 @@ app.put('/api/:endpoint/:id', (req, res) => {
 // Route to handle POST requests
 app.post('/api/:endpoint', (req, res) => {
     const { endpoint } = req.params;
-    const apiUrl = `${API_BASE_URL}/${endpoint}`;
+    const apiUrl = constructApiUrl(endpoint);
 
     fetch(apiUrl, {
         method: 'POST',
@@ -101,11 +109,7 @@ app.post('/api/:endpoint', (req, res) => {
 // Route to handle DELETE requests
 app.delete('/api/:endpoint/:id/:subid?', (req, res) => {
     const { endpoint, id, subid } = req.params;
-    let apiUrl = `${API_BASE_URL}/${endpoint}/${id}`;
-
-    if (subid) {
-        apiUrl += `/${subid}`;
-    }
+    const apiUrl = constructApiUrl(endpoint, id, subid);
 
     fetch(apiUrl, {
         method: 'DELETE',
