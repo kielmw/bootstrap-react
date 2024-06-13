@@ -228,7 +228,7 @@
                                 students.forEach(student => {
                                     const listItem = document.createElement('li');
                                     listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-                                    listItem.textContent = student.id.student;
+                                    listItem.innerHTML = `${student.id.student} <span class="badge bg-primary rounded-pill">Nilai Akhir: ${student.nilaiAkhir}</span>`;
 
                                     // Remove button
                                     const removeButton = document.createElement('button');
