@@ -42,7 +42,10 @@
         <h1>List Kelas</h1>
         <div class="mb-4">
             <button id="newKelasButton" class="btn btn-success">+ Kelas</button>
+            <button id="refreshTeachersButton" class="btn btn-outline-primary ms-2" title="Refresh Teachers">&#x21bb;</button>
+            <button id="refreshStudentsButton" class="btn btn-outline-primary ms-2" title="Refresh Students">&#x21bb;</button>
         </div>
+        
         <div class="mb-3">
             <input type="text" id="searchInput" class="form-control" placeholder="Search by Nama Kelas">
         </div>
@@ -74,6 +77,43 @@
     </div>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script>
+        // Event listener for the "Refresh Teachers" button
+        document.getElementById('refreshTeachersButton').addEventListener('click', () => {
+            fetch('http://localhost:3000/reload-teachers', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to reload teachers');
+                }
+                alert('Teachers reloaded successfully!');
+                // Optionally, you may want to refresh other data after reloading teachers
+                fetchData(); // Example: Refresh main data after reloading teachers
+            })
+            .catch(error => {
+                console.error('Error reloading teachers:', error);
+                alert('Failed to reload teachers');
+            });
+        });
+
+        // Event listener for the "Refresh Students" button
+        document.getElementById('refreshStudentsButton').addEventListener('click', () => {
+            fetch('http://localhost:3000/reload-students', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to reload students');
+                }
+                alert('Students reloaded successfully!');
+                // Optionally, you may want to refresh other data after reloading students
+                fetchData(); // Example: Refresh main data after reloading students
+            })
+            .catch(error => {
+                console.error('Error reloading students:', error);
+                alert('Failed to reload students');
+            });
+        });
         document.addEventListener('DOMContentLoaded', () => {
             let kelasData = [];
 

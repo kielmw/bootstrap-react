@@ -129,6 +129,50 @@ app.delete('/api/:endpoint/:id/:subid?', (req, res) => {
     });
 });
 
+// Route to handle POST request for reloading teachers
+app.post('/reload-teachers', (req, res) => {
+    const apiUrl = 'http://localhost:9090/reload-teachers';
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reload teachers');
+        }
+        res.status(200).send('Teachers reloaded successfully!');
+    })
+    .catch(error => {
+        console.error('Error reloading teachers:', error);
+        res.status(500).json({ error: 'An error occurred while reloading teachers' });
+    });
+});
+
+// Route to handle POST request for reloading students
+app.post('/reload-students', (req, res) => {
+    const apiUrl = 'http://localhost:9090/reload-students';
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reload students');
+        }
+        res.status(200).send('Students reloaded successfully!');
+    })
+    .catch(error => {
+        console.error('Error reloading students:', error);
+        res.status(500).json({ error: 'An error occurred while reloading students' });
+    });
+});
+
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
